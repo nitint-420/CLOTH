@@ -8,10 +8,12 @@
     "db:studio": "prisma studio",
     "seed": "tsx prisma/seed.ts",
     "build": "echo ok",
-    "dev": "echo ok"
+    "dev": "echo ok",
+    "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "schema": "./prisma/schema.prisma"
   },
   "dependencies": { "@prisma/client": "5.14.0" },
   "devDependencies": {
@@ -21,5 +23,5 @@
     "bcryptjs": "^2.4.3",
     "@types/bcryptjs": "^2.4.6"
   }
-  
 }
+
