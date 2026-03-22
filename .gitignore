@@ -5,3 +5,5 @@ dist
 *.db-journal
 .env.local
 .turbo
+.vercel
+.env*.local
