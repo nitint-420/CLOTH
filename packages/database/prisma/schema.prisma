@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url = env("DATABASE_URL")
 }
 
 model User {
@@ -265,3 +265,4 @@ model DayBook {
   @@index([date])
   @@map("daybook")
 }
+
