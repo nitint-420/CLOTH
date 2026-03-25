@@ -12,7 +12,7 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**",
-        "node_modules/.prisma/**"
+        "node_modules/.prisma/client/**"
       ],
       "env": [
         "DATABASE_URL",
