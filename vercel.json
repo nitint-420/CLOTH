@@ -1,4 +1,1 @@
-{
-  "buildCommand": "pnpm --filter @ecom/database db:generate && turbo run build",
-  "installCommand": "pnpm install"
-}
+{"buildCommand": "pnpm --filter @ecom/database db:generate && turbo run build", "installCommand": "pnpm install"}
