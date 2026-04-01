@@ -4,7 +4,7 @@ import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
 import { DollarSign, ShoppingCart, CreditCard, TrendingUp, AlertTriangle, Clock } from "lucide-react";
 import Link from "next/link";
-export const dynamic = 'force-dynamic';
+
 
 async function getStats() {
   const today = new Date(); today.setHours(0,0,0,0);
