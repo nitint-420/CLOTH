@@ -4,7 +4,12 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "node_modules/.prisma/client/**"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "../../node_modules/.prisma/client/**",
+        "../../node_modules/.pnpm/@prisma+client@5.14.0_prisma@5.14.0/node_modules/.prisma/client/**"
+      ],
       "env": [
         "DATABASE_URL",
         "JWT_SECRET",
