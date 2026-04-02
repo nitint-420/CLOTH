@@ -1,11 +1,11 @@
-const path = require("path");
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@ecom/ui", "@ecom/utils", "@ecom/database"],
+  // ...jo bhi pehle se hai
   experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "prisma"],
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
-  outputFileTracingRoot: path.join(__dirname, "../../"),
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
