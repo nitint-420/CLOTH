@@ -2,6 +2,8 @@ import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 
+// export const dynamic = "force-dynamic";
+
 export default async function DaybookPage() {
   const today = new Date(); today.setHours(0,0,0,0);
   const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);

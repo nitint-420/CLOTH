@@ -3,6 +3,8 @@ import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 import { User } from "lucide-react";
 
+// export const dynamic = "force-dynamic";
+
 export default async function KhataPage() {
   const accounts = await prisma.khataAccount.findMany({ where: { isActive: true }, orderBy: { name: "asc" } });
   const total = accounts.reduce((s, a) => s + a.currentBalance, 0);

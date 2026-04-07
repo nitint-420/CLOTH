@@ -5,6 +5,8 @@ import { formatCurrency, getWhatsAppLink, generateInvoiceMessage } from "@ecom/u
 import { Search, Plus, Minus, Trash2, Barcode, User, Phone, ShoppingCart, Send, Banknote, Smartphone, CreditCard, X, Check, Package, Printer } from "lucide-react";
 import toast from "react-hot-toast";
 
+// export const dynamic = "force-dynamic";
+
 interface Product { id: string; name: string; sku: string; barcode?: string; sellingPrice: number; stock: number; unit: string; category: { name: string }; }
 interface CartItem { productId: string; name: string; qty: number; price: number; unit: string; stock: number; }
 interface KhataAcc { id: string; name: string; phone: string; currentBalance: number; creditLimit: number; }

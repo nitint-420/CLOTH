@@ -4,7 +4,11 @@ import ClientPage from "./ClientPage";
 async function getData() {
   const [categories, products, settings] = await Promise.all([
     prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),
-    prisma.product.findMany({ where: { isActive: true, isFeatured: true, stock: { gt: 0 } }, take: 8, include: { category: { select: { name: true } } } }),
+    prisma.product.findMany({
+      where: { isActive: true, stock: { gt: 0 } },
+      include: { category: { select: { name: true } } },
+      orderBy: { isFeatured: "desc" },
+    }),
     prisma.setting.findMany(),
   ]);
   const s: Record<string,string> = {};

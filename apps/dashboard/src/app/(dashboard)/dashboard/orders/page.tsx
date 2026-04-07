@@ -2,6 +2,8 @@ import { prisma } from "@ecom/database";
 import { formatCurrency, formatDateTime } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
 
+// export const dynamic = "force-dynamic";
+
 export default async function OrdersPage() {
   const orders = await prisma.order.findMany({ take: 50, orderBy: { createdAt: "desc" }, include: { items: true } });
   return (
