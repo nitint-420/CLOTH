@@ -1,6 +1,10 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from "@ecom/database";
 import { formatCurrency, formatDateTime } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
+import type { Prisma } from "@ecom/database";  
+
+type Order = Prisma.OrderGetPayload<{ include: { items: true } }>;
 
 // export const dynamic = "force-dynamic";
 
@@ -11,7 +15,7 @@ export default async function OrdersPage() {
       <h1 className="text-2xl font-bold">Orders ({orders.length})</h1>
       <div className="space-y-3">
         {orders.length === 0 && <p className="text-center text-gray-500 py-20">No orders yet</p>}
-        {orders.map(o => (
+        {orders.map((o: Order) => (
           <Card key={o.id}><CardContent className="p-4">
             <div className="flex justify-between items-start">
               <div><p className="font-bold">{o.orderNumber}</p><p className="text-sm text-gray-500">{o.customerName} {o.customerPhone && "| " + o.customerPhone}</p><p className="text-xs text-gray-400">{formatDateTime(o.createdAt)} | {o.items.length} items</p></div>

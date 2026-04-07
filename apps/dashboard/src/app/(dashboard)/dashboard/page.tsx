@@ -1,8 +1,10 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
 import { DollarSign, ShoppingCart, CreditCard, TrendingUp, AlertTriangle, Clock } from "lucide-react";
 import Link from "next/link";
+
 
 async function getStats() {
   const today = new Date(); today.setHours(0,0,0,0);
@@ -63,3 +65,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+

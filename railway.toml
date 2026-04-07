@@ -1,0 +1,6 @@
+﻿[build]
+builder = "NIXPACKS"
+buildCommand = "npm install -g pnpm && pnpm install && pnpm --filter dashboard build"
+
+[deploy]
+startCommand = "pnpm --filter dashboard start"

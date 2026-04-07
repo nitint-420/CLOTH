@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
@@ -5,7 +6,7 @@ import { Card, CardContent } from "@ecom/ui";
 export default async function ReportsPage() {
   const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
   const orders = await prisma.order.findMany({ where: { createdAt: { gte: monthStart }, status: { not: "CANCELLED" } }, include: { items: { include: { product: true } } } });
-  const sales = orders.reduce((s,o) => s+o.totalAmount, 0);
+  const sales = orders.reduce((s: number, o: {totalAmount: number}) => s + o.totalAmount, 0);
   let profit = 0;
   orders.forEach(o => o.items.forEach(i => { profit += (i.unitPrice - (i.product?.costPrice||0)) * i.quantity; }));
   const khata = await prisma.khataAccount.aggregate({ _sum: { currentBalance: true } });
@@ -21,3 +22,4 @@ export default async function ReportsPage() {
     </div>
   );
 }
+

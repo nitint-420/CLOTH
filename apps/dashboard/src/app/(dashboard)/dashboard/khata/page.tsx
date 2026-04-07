@@ -1,18 +1,23 @@
+export const dynamic = 'force-dynamic';
 import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 import { User } from "lucide-react";
 
+<<<<<<< HEAD
 // export const dynamic = "force-dynamic";
+=======
+type KhataAccount = Awaited<ReturnType<typeof prisma.khataAccount.findMany>>[number];
+>>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
 
 export default async function KhataPage() {
   const accounts = await prisma.khataAccount.findMany({ where: { isActive: true }, orderBy: { name: "asc" } });
-  const total = accounts.reduce((s, a) => s + a.currentBalance, 0);
+  const total = accounts.reduce((s: number, a: KhataAccount) => s + a.currentBalance, 0);
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center"><h1 className="text-2xl font-bold">Khata Book</h1><div className="text-right"><p className="text-sm text-gray-500">Total Outstanding</p><p className="text-2xl font-bold text-red-600">{formatCurrency(total)}</p></div></div>
       <div className="space-y-3">
-        {accounts.map(a => (
+        {accounts.map((a: KhataAccount) => (
           <Card key={a.id}><CardContent className="p-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center"><User className="h-6 w-6 text-gray-400" /></div>

@@ -1,4 +1,5 @@
-﻿import { prisma } from "@ecom/database";
+export const dynamic = 'force-dynamic';
+import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
 import { Package } from "lucide-react";
@@ -44,3 +45,4 @@ export default async function ProductsPage() {
     </div>
   );
 }
+

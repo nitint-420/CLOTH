@@ -1,3 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { clearAuthCookie } from "@/lib/auth";
-export async function POST() { clearAuthCookie(); return NextResponse.json({ success: true }); }
+
+export async function POST() {
+  return NextResponse.json({ success: true });
+}

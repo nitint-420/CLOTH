@@ -5,6 +5,7 @@ import { cn } from "@ecom/ui";
 import { LayoutDashboard, ShoppingCart, Package, Receipt, BookOpen, BarChart3, Settings, LogOut, Store, CreditCard, Menu, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useClerk } from "@clerk/nextjs";
 
 const nav = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -22,9 +23,10 @@ export function Sidebar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
+  const { signOut } = useClerk();
   const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    toast.success("Logged out"); router.push("/login");
+    await signOut({ redirectUrl: "/sign-in" });
+    toast.success("Logged out");
   };
 
   return (
@@ -62,3 +64,4 @@ export function Sidebar() {
     </>
   );
 }
+
