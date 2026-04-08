@@ -3,11 +3,7 @@ import { prisma } from "@ecom/database";
 import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 
-<<<<<<< HEAD
-// export const dynamic = "force-dynamic";
-=======
 type Entry = Awaited<ReturnType<typeof prisma.dayBook.findMany>>[number];
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
 
 export default async function DaybookPage() {
   const today = new Date(); today.setHours(0,0,0,0);
@@ -36,4 +32,3 @@ export default async function DaybookPage() {
     </div>
   );
 }
-

@@ -4,11 +4,7 @@ import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 import { User } from "lucide-react";
 
-<<<<<<< HEAD
-// export const dynamic = "force-dynamic";
-=======
 type KhataAccount = Awaited<ReturnType<typeof prisma.khataAccount.findMany>>[number];
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
 
 export default async function KhataPage() {
   const accounts = await prisma.khataAccount.findMany({ where: { isActive: true }, orderBy: { name: "asc" } });

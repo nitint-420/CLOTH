@@ -1,11 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import { formatCurrency } from "@ecom/utils";
-<<<<<<< HEAD
-import { Store, Phone, MapPin, Clock, MessageCircle, ShoppingCart, Plus, Minus, X } from "lucide-react"; // X still used in cart/form
-=======
 import { Store, Phone, MapPin, Clock, MessageCircle, ShoppingCart, Plus, Minus, X } from "lucide-react";
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
 
 type Product = {
   id: string; name: string; sellingPrice: number; mrp: number;
@@ -21,9 +17,6 @@ export default function HomePage({ categories, products, s }: {
   const [showCart, setShowCart] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", address: "", note: "" });
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  // ✅ NEW: Active category state — "all" = sab products dikhao
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
   const wa = "91" + (s.store_whatsapp || s.store_phone || "9876543210");
@@ -44,9 +37,16 @@ export default function HomePage({ categories, products, s }: {
   const total = cart.reduce((sum, i) => sum + i.product.sellingPrice * i.qty, 0);
   const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
 
-  const filteredProducts = selectedCategory
-    ? products.filter(p => p.category.name === selectedCategory)
-    : products;
+  const allCategories = [
+    { id: "all", name: "All" },
+    ...categories,
+  ];
+
+  const filteredProducts = activeCategory === "all"
+    ? products
+    : products.filter(p => p.category.name === activeCategory);
+
+  const activeCatLabel = activeCategory === "all" ? "All Products" : activeCategory;
 
   const sendOrder = () => {
     if (!form.name || !form.phone || !form.address) { alert("Naam, phone aur address zaruri hai!"); return; }
@@ -62,22 +62,6 @@ export default function HomePage({ categories, products, s }: {
   };
 
   const emojis = ["🌾","🍚","🫒","🌶","🍬","☕","🍪","🥛","🧴","🧹","🥤","🍜"];
-
-  // ✅ NEW: "All" + baaki categories ek saath
-  const allCategories = [
-    { id: "all", name: "All" },
-    ...categories,
-  ];
-
-  // ✅ NEW: Selected category ke hisaab se products filter karo
-  const filteredProducts = activeCategory === "all"
-    ? products
-    : products.filter(p => p.category.name === activeCategory);
-
-  // ✅ NEW: Section heading
-  const activeCatLabel = activeCategory === "all"
-    ? "All Products"
-    : activeCategory;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -123,43 +107,10 @@ export default function HomePage({ categories, products, s }: {
         </div>
       </section>
 
-      {/* ✅ UPDATED: Categories with "All" + active state */}
+      {/* Categories */}
       <section className="py-8 px-4 container mx-auto">
         <h2 className="text-xl font-bold mb-4">Shop by Category</h2>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-<<<<<<< HEAD
-          {/* All Category */}
-          <div
-            onClick={() => setSelectedCategory(null)}
-            className={`flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border cursor-pointer transition-all
-              ${selectedCategory === null
-                ? "border-green-500 bg-green-50 shadow-lg ring-2 ring-green-400"
-                : "hover:shadow-lg"
-              }`}
-          >
-            <span className="text-3xl mb-2">🏪</span>
-            <span className={`text-xs font-medium text-center ${selectedCategory === null ? "text-green-700" : ""}`}>
-              All
-            </span>
-          </div>
-          {categories.map((cat, i) => (
-            <div
-              key={cat.id}
-              onClick={() => setSelectedCategory(prev => prev === cat.name ? null : cat.name)}
-              className={`flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border cursor-pointer transition-all
-                ${selectedCategory === cat.name
-                  ? "border-green-500 bg-green-50 shadow-lg ring-2 ring-green-400"
-                  : "hover:shadow-lg"
-                }`}
-            >
-              <span className="text-3xl mb-2">{emojis[i % emojis.length]}</span>
-              <span className={`text-xs font-medium text-center ${selectedCategory === cat.name ? "text-green-700" : ""}`}>
-                {cat.name}
-              </span>
-            </div>
-          ))}
-=======
-
           {allCategories.map((cat, i) => {
             const isAll = cat.id === "all";
             const isActive = activeCategory === (isAll ? "all" : cat.name);
@@ -173,14 +124,12 @@ export default function HomePage({ categories, products, s }: {
                     : "bg-white border-gray-100 hover:shadow-lg hover:border-green-300"
                   }`}
               >
-                {/* "All" ke liye special icon, baaki ke liye emojis */}
                 <span className="text-3xl mb-2">
                   {isAll ? "🏪" : emojis[(i - 1) % emojis.length]}
                 </span>
                 <span className={`text-xs font-semibold text-center ${isActive ? "text-white" : "text-gray-700"}`}>
                   {cat.name}
                 </span>
-                {/* Active category mein product count badge */}
                 {isActive && !isAll && (
                   <span className="mt-1 text-xs bg-white text-green-600 rounded-full px-2 py-0.5 font-bold">
                     {filteredProducts.length}
@@ -189,23 +138,12 @@ export default function HomePage({ categories, products, s }: {
               </div>
             );
           })}
-
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
         </div>
       </section>
 
-      {/* ✅ UPDATED: Products — filtered by selected category */}
+      {/* Products */}
       <section className="py-8 px-4 bg-white">
         <div className="container mx-auto">
-<<<<<<< HEAD
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-xl font-bold">
-              {selectedCategory ? `${selectedCategory}` : "Featured Products"}
-            </h2>
-            <span className="text-xs text-gray-400 ml-auto">{filteredProducts.length} products</span>
-=======
-
-          {/* Dynamic heading + count */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">{activeCatLabel}</h2>
             <span className="text-sm text-gray-500 bg-green-50 text-green-700 px-3 py-1 rounded-full font-semibold">
@@ -213,7 +151,6 @@ export default function HomePage({ categories, products, s }: {
             </span>
           </div>
 
-          {/* No products state */}
           {filteredProducts.length === 0 && (
             <div className="text-center py-16 text-gray-400">
               <p className="text-5xl mb-4">🔍</p>
@@ -227,88 +164,29 @@ export default function HomePage({ categories, products, s }: {
               return (
                 <div key={p.id} className="bg-gray-50 rounded-2xl p-4 border hover:shadow-lg transition-all">
                   <div className="aspect-square bg-white rounded-xl mb-3 overflow-hidden flex items-center justify-center">
-                    {p.image
-                      ? <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-xl" />
-                      : <span className="text-4xl">🛒</span>
-                    }
+                    {p.image ? <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-xl" /> : <span className="text-4xl">🛒</span>}
                   </div>
                   <p className="text-xs text-green-600 font-medium">{p.category.name}</p>
                   <h3 className="font-medium text-sm line-clamp-2 h-10 mt-1">{p.name}</h3>
                   <div className="flex items-center justify-between mt-2 mb-3">
                     <span className="text-green-600 font-bold">{formatCurrency(p.sellingPrice)}</span>
-                    {p.mrp > p.sellingPrice && (
-                      <span className="text-xs text-gray-400 line-through">{formatCurrency(p.mrp)}</span>
-                    )}
+                    {p.mrp > p.sellingPrice && <span className="text-xs text-gray-400 line-through">{formatCurrency(p.mrp)}</span>}
                   </div>
                   {cartItem ? (
                     <div className="flex items-center justify-between bg-green-50 rounded-xl p-1">
-                      <button
-                        onClick={() => updateQty(p.id, cartItem.qty - 1)}
-                        className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
+                      <button onClick={() => updateQty(p.id, cartItem.qty - 1)} className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"><Minus className="h-4 w-4" /></button>
                       <span className="font-bold text-green-700">{cartItem.qty}</span>
-                      <button
-                        onClick={() => updateQty(p.id, cartItem.qty + 1)}
-                        className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
+                      <button onClick={() => updateQty(p.id, cartItem.qty + 1)} className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"><Plus className="h-4 w-4" /></button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => addToCart(p)}
-                      className="w-full bg-green-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1"
-                    >
+                    <button onClick={() => addToCart(p)} className="w-full bg-green-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1">
                       <Plus className="h-4 w-4" />Add to Cart
                     </button>
                   )}
                 </div>
               );
             })}
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
           </div>
-
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <span className="text-5xl block mb-3">🛒</span>
-              <p className="font-medium">Is category mein koi product nahi hai</p>
-              <button onClick={() => setSelectedCategory(null)} className="mt-4 text-green-600 underline text-sm">
-                Sab products dekho
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {filteredProducts.map(p => {
-                const cartItem = cart.find(i => i.product.id === p.id);
-                return (
-                  <div key={p.id} className="bg-gray-50 rounded-2xl p-4 border hover:shadow-lg transition-all">
-                    <div className="aspect-square bg-white rounded-xl mb-3 overflow-hidden flex items-center justify-center">
-                      {p.image ? <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-xl" /> : <span className="text-4xl">🛒</span>}
-                    </div>
-                    <p className="text-xs text-green-600 font-medium">{p.category.name}</p>
-                    <h3 className="font-medium text-sm line-clamp-2 h-10 mt-1">{p.name}</h3>
-                    <div className="flex items-center justify-between mt-2 mb-3">
-                      <span className="text-green-600 font-bold">{formatCurrency(p.sellingPrice)}</span>
-                      {p.mrp > p.sellingPrice && <span className="text-xs text-gray-400 line-through">{formatCurrency(p.mrp)}</span>}
-                    </div>
-                    {cartItem ? (
-                      <div className="flex items-center justify-between bg-green-50 rounded-xl p-1">
-                        <button onClick={() => updateQty(p.id, cartItem.qty - 1)} className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"><Minus className="h-4 w-4" /></button>
-                        <span className="font-bold text-green-700">{cartItem.qty}</span>
-                        <button onClick={() => updateQty(p.id, cartItem.qty + 1)} className="bg-green-600 text-white rounded-lg w-8 h-8 flex items-center justify-center"><Plus className="h-4 w-4" /></button>
-                      </div>
-                    ) : (
-                      <button onClick={() => addToCart(p)} className="w-full bg-green-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1">
-                        <Plus className="h-4 w-4" />Add to Cart
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
       </section>
 
@@ -407,13 +285,8 @@ export default function HomePage({ categories, products, s }: {
         <p className="text-gray-400 mt-1">{s.store_address}</p>
         <p className="text-gray-400">Phone: {s.store_phone}</p>
         <p className="text-gray-500 mt-4 text-sm">2026 All rights reserved</p>
-<<<<<<< HEAD
-        <p className="text-red-500 mt-8 text-20m">RAMKRISHNA INFOTECH</p>
-        <p className="text-white-500 mt-4 text-sm"> Software Develop By Mr. Nitin Thakare Mo. No. 9975162329</p>
-=======
         <p className="text-red-500 mt-4 text-sm">RAMKRUSHNA COMPUTER SERVICE</p>
         <p className="text-white-500 mt-4 text-sm">Software Develop By Mr. Nitin Thakare Mo. No. 9975162329</p>
->>>>>>> 41cfb7f71a6b465ea6ca924927b74cd04e21f4cc
       </footer>
     </div>
   );
