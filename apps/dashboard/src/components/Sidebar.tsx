@@ -3,9 +3,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@ecom/ui";
 import { LayoutDashboard, ShoppingCart, Package, Receipt, BookOpen, BarChart3, Settings, LogOut, Store, CreditCard, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useClerk } from "@clerk/nextjs";
 
 const nav = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -22,11 +21,20 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [storeName, setStoreName] = useState("Grocery");
 
-  const { signOut } = useClerk();
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(r => r.json())
+      .then(d => {
+        const s = d.settings?.find((x: any) => x.key === "store_name");
+        if (s?.value) setStoreName(s.value);
+      });
+  }, []);
+
   const logout = async () => {
-    await signOut({ redirectUrl: "/sign-in" });
     toast.success("Logged out");
+    router.push("/sign-in");
   };
 
   return (
@@ -37,7 +45,8 @@ export function Sidebar() {
       {open && <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setOpen(false)} />}
       <aside className={cn("fixed top-0 left-0 z-40 h-screen w-64 bg-white border-r flex flex-col transform transition-transform lg:translate-x-0", open ? "translate-x-0" : "-translate-x-full")}>
         <div className="h-16 flex items-center px-6 border-b">
-          <Store className="h-8 w-8 text-green-600 mr-2" /><span className="text-xl font-bold">Grocery</span>
+          <Store className="h-8 w-8 text-green-600 mr-2" />
+          <span className="text-xl font-bold truncate">{storeName}</span>
         </div>
         <nav className="flex-1 overflow-y-auto py-4">
           {nav.map((item) => {
@@ -64,4 +73,3 @@ export function Sidebar() {
     </>
   );
 }
-
