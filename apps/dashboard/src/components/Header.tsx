@@ -2,18 +2,25 @@
 import { useState, useEffect } from "react";
 import { Bell, User, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export function Header() {
   const [user, setUser] = useState<any>(null);
   const [dd, setDd] = useState(false);
-  const { signOut } = useClerk();
+  const router = useRouter();
 
-  useEffect(() => { 
-    fetch("/api/auth/me").then(r => r.json()).then(d => { 
-      if (d.user) setUser(d.user); 
-    }).catch(() => {}); 
+  useEffect(() => {
+    fetch("/api/auth/me").then(r => r.json()).then(d => {
+      if (d.user) setUser(d.user);
+    }).catch(() => {});
   }, []);
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    toast.success("Logged out");
+    router.push("/sign-in");
+  };
 
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
@@ -36,11 +43,7 @@ export function Header() {
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-1 z-50">
                 <div className="px-4 py-2 border-b"><p className="text-sm font-medium">{user?.name}</p><p className="text-xs text-gray-500">{user?.phone}</p></div>
                 <Link href="/dashboard/settings" className="block px-4 py-2 text-sm hover:bg-gray-50" onClick={() => setDd(false)}>Settings</Link>
-                <button 
-                  onClick={() => signOut({ redirectUrl: "/sign-in" })} 
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                  Logout
-                </button>
+                <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>
               </div>
             </>
           )}
