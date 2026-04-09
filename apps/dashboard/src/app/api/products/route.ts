@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@ecom/database";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
   try {
@@ -29,6 +30,8 @@ export async function PATCH(req: NextRequest) {
     const { id, image } = await req.json();
     if (!id || !image) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     const product = await prisma.product.update({ where: { id }, data: { image } });
+    revalidatePath("/");
+    revalidatePath("/dashboard/products");
     return NextResponse.json({ product });
   } catch (e) {
     console.error("PATCH error:", e);
