@@ -35,7 +35,14 @@ export default async function ProductsPage() {
                       {p.stock} {p.unit}
                     </Badge>
                   </div>
-                  <ImageUpload productId={p.id} hasImage={!!p.image} />
+                  <ImageUpload
+                    productId={p.id}
+                    hasImage={!!p.image}
+                    currentPrice={p.sellingPrice}
+                    currentMrp={p.mrp}
+                    currentStock={p.stock}
+                    currentCost={p.costPrice}
+                  />
                 </div>
               </div>
             </CardContent>
