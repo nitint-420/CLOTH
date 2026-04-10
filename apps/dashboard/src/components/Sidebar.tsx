@@ -5,6 +5,7 @@ import { cn } from "@ecom/ui";
 import { LayoutDashboard, ShoppingCart, Package, Receipt, BookOpen, BarChart3, Settings, LogOut, Store, CreditCard, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { ..., PackagePlus } from "lucide-react";
 
 const nav = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -13,7 +14,9 @@ const nav = [
   { name: "Products", href: "/dashboard/products", icon: Package },
   { name: "Khata Book", href: "/dashboard/khata", icon: CreditCard },
   { name: "Daybook", href: "/dashboard/daybook", icon: BookOpen },
+  { name: "Purchase Entry", href: "/dashboard/purchase", icon: ShoppingCart },
   { name: "Reports", href: "/dashboard/reports", icon: BarChart3 },
+  { name: "Purchase Entry", href: "/dashboard/purchase", icon: PackagePlus },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
