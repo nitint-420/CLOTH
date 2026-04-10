@@ -37,6 +37,7 @@ export default async function ProductsPage() {
                   </div>
                   <ImageUpload
                     productId={p.id}
+                    productName={p.name}
                     hasImage={!!p.image}
                     currentPrice={p.sellingPrice}
                     currentMrp={p.mrp}

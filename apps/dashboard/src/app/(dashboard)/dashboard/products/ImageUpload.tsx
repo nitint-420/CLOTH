@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 interface Props {
   productId: string;
+  productName: string;
   hasImage: boolean;
   currentPrice: number;
   currentMrp: number;
@@ -12,7 +13,7 @@ interface Props {
   currentCost: number;
 }
 
-export function ImageUpload({ productId, hasImage, currentPrice, currentMrp, currentStock, currentCost }: Props) {
+export function ImageUpload({ productId, productName, hasImage, currentPrice, currentMrp, currentStock, currentCost }: Props) {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -22,6 +23,15 @@ export function ImageUpload({ productId, hasImage, currentPrice, currentMrp, cur
     stock: currentStock,
     costPrice: currentCost,
   });
+  // Cost price change hone pe purchase entry ke liye
+  const [showPurchase, setShowPurchase] = useState(false);
+  const [purchaseData, setPurchaseData] = useState({
+    supplier: "",
+    quantity: 1,
+    newCostPrice: currentCost,
+    date: new Date().toISOString().split("T")[0],
+  });
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const compressImage = (file: File): Promise<string> => {
@@ -66,7 +76,13 @@ export function ImageUpload({ productId, hasImage, currentPrice, currentMrp, cur
       const res = await fetch("/api/products/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: productId, ...editData, previousPrice: currentPrice, previousStock: currentStock, previousCost: currentCost }),
+        body: JSON.stringify({
+          id: productId,
+          ...editData,
+          previousPrice: currentPrice,
+          previousStock: currentStock,
+          previousCost: currentCost,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -77,11 +93,42 @@ export function ImageUpload({ productId, hasImage, currentPrice, currentMrp, cur
     finally { setLoading(false); }
   };
 
+  const savePurchase = async () => {
+    if (!purchaseData.quantity || purchaseData.quantity <= 0) { toast.error("Quantity daalo!"); return; }
+    if (!purchaseData.newCostPrice || purchaseData.newCostPrice <= 0) { toast.error("Cost price daalo!"); return; }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          supplier: purchaseData.supplier || "Direct Purchase",
+          date: purchaseData.date,
+          note: `Cost price change: ₹${currentCost} → ₹${purchaseData.newCostPrice}`,
+          items: [{
+            productId,
+            name: productName,
+            unit: "PCS",
+            quantity: purchaseData.quantity,
+            costPrice: purchaseData.newCostPrice,
+          }],
+          updateCostPrice: true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success("Purchase entry saved! Stock updated!");
+      setShowPurchase(false);
+      setTimeout(() => window.location.reload(), 800);
+    } catch (e: any) { toast.error(e.message); }
+    finally { setLoading(false); }
+  };
+
   return (
     <>
       <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleChange} disabled={loading} />
-      
-      <div className="flex gap-2 mt-2">
+
+      <div className="flex gap-2 mt-2 flex-wrap">
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -92,58 +139,101 @@ export function ImageUpload({ productId, hasImage, currentPrice, currentMrp, cur
         </button>
         <button
           type="button"
-          onClick={() => setShowEdit(!showEdit)}
+          onClick={() => { setShowEdit(!showEdit); setShowPurchase(false); }}
           className="text-xs text-green-600 underline flex items-center gap-1"
         >
           <Pencil className="h-3 w-3" />Edit
         </button>
+        <button
+          type="button"
+          onClick={() => { setShowPurchase(!showPurchase); setShowEdit(false); }}
+          className="text-xs text-orange-500 underline flex items-center gap-1"
+        >
+          + Purchase
+        </button>
       </div>
 
+      {/* Edit Form */}
       {showEdit && (
         <div className="mt-3 p-3 bg-gray-50 rounded-xl border space-y-2">
+          <p className="text-xs font-semibold text-gray-600">Edit Product</p>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-xs text-gray-500">Selling Price ₹</label>
-              <input
-                type="number"
-                value={editData.sellingPrice}
+              <input type="number" value={editData.sellingPrice}
                 onChange={e => setEditData({...editData, sellingPrice: Number(e.target.value)})}
-                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500"
-              />
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500" />
             </div>
             <div>
               <label className="text-xs text-gray-500">MRP ₹</label>
-              <input
-                type="number"
-                value={editData.mrp}
+              <input type="number" value={editData.mrp}
                 onChange={e => setEditData({...editData, mrp: Number(e.target.value)})}
-                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500"
-              />
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500" />
             </div>
             <div>
               <label className="text-xs text-gray-500">Cost Price ₹</label>
-              <input
-                type="number"
-                value={editData.costPrice}
+              <input type="number" value={editData.costPrice}
                 onChange={e => setEditData({...editData, costPrice: Number(e.target.value)})}
-                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500"
-              />
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500" />
             </div>
             <div>
               <label className="text-xs text-gray-500">Stock</label>
-              <input
-                type="number"
-                value={editData.stock}
+              <input type="number" value={editData.stock}
                 onChange={e => setEditData({...editData, stock: Number(e.target.value)})}
-                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500"
-              />
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-green-500" />
             </div>
           </div>
           <div className="flex gap-2">
-            <button onClick={saveEdit} disabled={loading} className="flex-1 bg-green-600 text-white py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
+            <button onClick={saveEdit} disabled={loading}
+              className="flex-1 bg-green-600 text-white py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
               <Save className="h-3 w-3" />{loading ? "Saving..." : "Save"}
             </button>
-            <button onClick={() => setShowEdit(false)} className="flex-1 bg-gray-200 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
+            <button onClick={() => setShowEdit(false)}
+              className="flex-1 bg-red-100 text-red-600 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
+              <X className="h-3 w-3" />Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Purchase Entry Form */}
+      {showPurchase && (
+        <div className="mt-3 p-3 bg-orange-50 rounded-xl border border-orange-200 space-y-2">
+          <p className="text-xs font-semibold text-orange-700">New Purchase Entry</p>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="col-span-2">
+              <label className="text-xs text-gray-500">Supplier Name</label>
+              <input type="text" value={purchaseData.supplier}
+                onChange={e => setPurchaseData({...purchaseData, supplier: e.target.value})}
+                placeholder="Supplier ka naam"
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">Date</label>
+              <input type="date" value={purchaseData.date}
+                onChange={e => setPurchaseData({...purchaseData, date: e.target.value})}
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+            </div>
+            <div>
+              <label className="text-xs text-gray-500">Quantity</label>
+              <input type="number" value={purchaseData.quantity} min="1"
+                onChange={e => setPurchaseData({...purchaseData, quantity: Number(e.target.value)})}
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+            </div>
+            <div className="col-span-2">
+              <label className="text-xs text-gray-500">New Cost Price ₹ (purana: ₹{currentCost})</label>
+              <input type="number" value={purchaseData.newCostPrice} min="0"
+                onChange={e => setPurchaseData({...purchaseData, newCostPrice: Number(e.target.value)})}
+                className="w-full border rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-orange-400" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={savePurchase} disabled={loading}
+              className="flex-1 bg-orange-500 text-white py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
+              <Save className="h-3 w-3" />{loading ? "Saving..." : "Save Purchase"}
+            </button>
+            <button onClick={() => setShowPurchase(false)}
+              className="flex-1 bg-red-100 text-red-600 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
               <X className="h-3 w-3" />Cancel
             </button>
           </div>
