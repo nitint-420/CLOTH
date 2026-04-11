@@ -4,6 +4,7 @@ import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent, Badge } from "@ecom/ui";
 import { Package } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
+import { AddProductButton } from "./AddProductButton";
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
@@ -14,7 +15,10 @@ export default async function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Products ({products.length})</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Products ({products.length})</h1>
+        <AddProductButton />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {products.map(p => (
           <Card key={p.id}>
@@ -53,4 +57,3 @@ export default async function ProductsPage() {
     </div>
   );
 }
-
