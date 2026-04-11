@@ -5,6 +5,7 @@ import { Card, CardContent, Badge } from "@ecom/ui";
 import { Package } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
 import { AddProductButton } from "./AddProductButton";
+import { DeleteProductButton } from "./DeleteProductButton";
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
@@ -47,6 +48,10 @@ export default async function ProductsPage() {
                     currentMrp={p.mrp}
                     currentStock={p.stock}
                     currentCost={p.costPrice}
+                  />
+                  <DeleteProductButton
+                    productId={p.id}
+                    productName={p.name}
                   />
                 </div>
               </div>

@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "ID missing" }, { status: 400 });
 
-    // Soft delete — isActive false karo
     await prisma.product.update({
       where: { id },
       data: { isActive: false },
