@@ -1,5 +1,6 @@
 ﻿import { prisma } from "@ecom/database";
 import ClientPage from "./ClientPage";
+export const dynamic = 'force-dynamic';
 
 async function getData() {
   const [categories, products, settings] = await Promise.all([
