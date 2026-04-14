@@ -4,6 +4,7 @@ import { formatCurrency } from "@ecom/utils";
 import { Card, CardContent } from "@ecom/ui";
 import { User } from "lucide-react";
 import { AddKhataButton } from "./AddKhataButton";
+import { EditKhataButton } from "./EditKhataButton";
 
 type KhataAccount = Awaited<ReturnType<typeof prisma.khataAccount.findMany>>[number];
 
@@ -13,7 +14,7 @@ export default async function KhataPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">Get-ChildItem "
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Khata Book</h1>
         <div className="flex items-center gap-4">
           <div className="text-right">
@@ -42,6 +43,9 @@ export default async function KhataPage() {
                 <p className="font-semibold">{a.name}</p>
                 <p className="text-sm text-gray-500">{a.phone}</p>
                 {a.address && <p className="text-xs text-gray-400">{a.address}</p>}
+                <div className="mt-2">
+                  <EditKhataButton account={a} />
+                </div>
               </div>
               <div className="text-right">
                 <p className={"text-xl font-bold " + (a.currentBalance > 0 ? "text-red-600" : "text-green-600")}>
