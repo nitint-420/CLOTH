@@ -122,7 +122,7 @@ export default function POSPage() {
  
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
+    <div className="flex flex-col h-screen lg:h-[calc(100vh-8rem)]">
       
       {/* Mobile Tabs */}
       <div className="flex lg:hidden border-b bg-white mb-2 rounded-xl overflow-hidden shadow-sm">
