@@ -1,12 +1,9 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Button, Card, CardContent, Input, Badge, Modal } from "@ecom/ui";
+import { Button, Input, Badge, Modal } from "@ecom/ui";
 import { formatCurrency, getWhatsAppLink, generateInvoiceMessage } from "@ecom/utils";
 import { Search, Plus, Minus, Trash2, Barcode, User, Phone, ShoppingCart, Send, Banknote, Smartphone, CreditCard, X, Check, Package, Printer } from "lucide-react";
 import toast from "react-hot-toast";
-const [activeTab, setActiveTab] = useState<"products"|"bill">("products");
-
-// export const dynamic = "force-dynamic";
 
 interface Product { id: string; name: string; sku: string; barcode?: string; sellingPrice: number; stock: number; unit: string; category: { name: string }; }
 interface CartItem { productId: string; name: string; qty: number; price: number; unit: string; stock: number; }
@@ -27,6 +24,7 @@ export default function POSPage() {
   const [khatas, setKhatas] = useState<KhataAcc[]>([]);
   const [selKhata, setSelKhata] = useState<KhataAcc|null>(null);
   const [showKhata, setShowKhata] = useState(false);
+  const [activeTab, setActiveTab] = useState<"products"|"bill">("products");
   const bBuf = useRef("");
   const bTimer = useRef<NodeJS.Timeout>();
 
@@ -119,30 +117,21 @@ export default function POSPage() {
     w.document.close();
   };
 
- 
-
   return (
     <div className="flex flex-col h-screen lg:h-[calc(100vh-8rem)]">
-      
-      {/* Mobile Tabs */}
       <div className="flex lg:hidden border-b bg-white mb-2 rounded-xl overflow-hidden shadow-sm">
-        <button
-          onClick={() => setActiveTab("products")}
-          className={"flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 " + (activeTab === "products" ? "bg-green-600 text-white" : "text-gray-600")}
-        >
+        <button onClick={() => setActiveTab("products")}
+          className={"flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 " + (activeTab === "products" ? "bg-green-600 text-white" : "text-gray-600")}>
           <Package className="h-4 w-4" />Products
         </button>
-        <button
-          onClick={() => setActiveTab("bill")}
-          className={"flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 " + (activeTab === "bill" ? "bg-green-600 text-white" : "text-gray-600")}
-        >
+        <button onClick={() => setActiveTab("bill")}
+          className={"flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2 " + (activeTab === "bill" ? "bg-green-600 text-white" : "text-gray-600")}>
           <ShoppingCart className="h-4 w-4" />
           Bill {cart.length > 0 && <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cart.length}</span>}
         </button>
       </div>
 
       <div className="flex flex-1 gap-4 overflow-hidden">
-        {/* Products Panel */}
         <div className={"flex-1 flex flex-col bg-white rounded-xl shadow-sm overflow-hidden " + (activeTab === "bill" ? "hidden lg:flex" : "flex")}>
           <div className="p-4 border-b">
             <div className="relative">
@@ -169,7 +158,6 @@ export default function POSPage() {
           </div>
         </div>
 
-        {/* Bill Panel */}
         <div className={"w-full lg:w-96 flex flex-col bg-white rounded-xl shadow-sm overflow-hidden " + (activeTab === "products" ? "hidden lg:flex" : "flex")}>
           <div className="p-4 border-b flex items-center justify-between bg-green-600 text-white">
             <div className="flex items-center gap-2">
